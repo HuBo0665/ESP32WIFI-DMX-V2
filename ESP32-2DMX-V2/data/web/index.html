@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HuBo-WiFi-DMX</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <!-- 页头 -->
+        <header class="header">
+            <h1>HuBo-WiFi-DMX</h1>
+            <div class="connection-status">
+                <span id="connection-status" class="status-indicator"></span>
+                <span>连接状态</span>
+            </div>
+        </header>
+
+        <!-- 状态面板 -->
+        <div class="status-panel">
+            <div class="status-item">
+                <h3>运行时间</h3>
+                <p id="uptime">-</p>
+            </div>
+            <div class="status-item">
+                <h3>Wi-Fi 信号强度</h3>
+                <p id="wifi-strength">-</p>
+            </div>
+            <div class="status-item">
+                <h3>可用内存</h3>
+                <p id="memory-usage">-</p>
+            </div>
+        </div>
+
+        <!-- 标签页导航 -->
+        <ul class="tab-nav">
+            <li data-tab="network" class="active">网络设置</li>
+            <li data-tab="artnet">Art-Net设置</li>
+            <li data-tab="pixel">像素设置</li>
+            <li data-tab="ap">AP模式</li>
+        </ul>
+
+        <!-- 标签页内容 -->
+        <!-- 网络设置 -->
+        <div id="network" class="tab-content active">
+            <form id="network-form" class="config-form">
+                <div class="form-group">
+                    <label for="device-name">设备名称</label>
+                    <input type="text" id="device-name" name="deviceName" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="dhcp-enabled" name="dhcpEnabled">
+                        启用DHCP
+                    </label>
+                </div>
+
+                <div id="static-ip-settings">
+                    <div class="form-group">
+                        <label for="static-ip">静态IP地址</label>
+                        <input type="text" id="static-ip" name="staticIP" pattern="^(\d{1,3}\.){3}\d{1,3}$">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="static-mask">子网掩码</label>
+                        <input type="text" id="static-mask" name="staticMask" pattern="^(\d{1,3}\.){3}\d{1,3}$">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="static-gateway">默认网关</label>
+                        <input type="text" id="static-gateway" name="staticGateway" pattern="^(\d{1,3}\.){3}\d{1,3}$">
+                    </div>
+                </div>
+
+                <button type="submit" class="btn primary">保存设置</button>
+            </form>
+        </div>
+
+        <!-- Art-Net设置 -->
+        <div id="artnet" class="tab-content">
+            <form id="artnet-form" class="config-form">
+                <div class="form-group">
+                    <label for="artnet-net">Net</label>
+                    <input type="number" id="artnet-net" name="artnetNet" min="0" max="127" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="artnet-subnet">Subnet</label>
+                    <input type="number" id="artnet-subnet" name="artnetSubnet" min="0" max="15" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="artnet-universe">Universe</label>
+                    <input type="number" id="artnet-universe" name="artnetUniverse" min="0" max="15" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="dmx-start-address">DMX起始地址</label>
+                    <input type="number" id="dmx-start-address" name="dmxStartAddress" min="1" max="512" required>
+                </div>
+
+                <button type="submit" class="btn primary">保存设置</button>
+            </form>
+        </div>
+
+        <!-- 像素设置 -->
+        <div id="pixel" class="tab-content">
+            <form id="pixel-form" class="config-form">
+                <div class="form-group">
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="pixel-enabled" name="pixelEnabled">
+                        启用像素控制
+                    </label>
+                </div>
+
+                <div class="form-group">
+                    <label for="pixel-count">像素数量</label>
+                    <input type="number" id="pixel-count" name="pixelCount" min="1" max="170" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="pixel-type">像素类型</label>
+                    <select id="pixel-type" name="pixelType">
+                        <option value="0">WS2811</option>
+                        <option value="1">WS2812</option>
+                        <option value="2">WS2812B</option>
+                        <option value="3">SK6812</option>
+                    </select>
+                </div>
+
+                <div class="pixel-test-container">
+                    <label for="pixel-test">测试模式</label>
+                    <select id="pixel-test" name="pixelTest">
+                        <option value="0">关闭</option>
+                        <option value="1">彩虹</option>
+                        <option value="2">跑马灯</option>
+                        <option value="3">闪烁</option>
+                    </select>
+                </div>
+
+                <button type="submit" class="btn primary">保存设置</button>
+            </form>
+        </div>
+
+        <!-- AP模式设置 -->
+        <div id="ap" class="tab-content">
+            <form id="ap-form" class="config-form">
+                <div class="form-group">
+                    <label for="ap-ssid">AP名称</label>
+                    <input type="text" id="ap-ssid" name="ssid" required minlength="1" maxlength="32">
+                    <span class="help-text">1-32个字符</span>
+                </div>
+
+                <div class="form-group">
+                    <label for="ap-password">密码</label>
+                    <input type="password" id="ap-password" name="password" required minlength="8" maxlength="63">
+                    <span class="help-text">8-63个字符</span>
+                </div>
+
+                <div class="form-group">
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="ap-enabled" name="enabled">
+                        启用AP模式
+                    </label>
+                </div>
+
+                <div class="ap-status" id="ap-status" style="display: none;">
+                    <p>状态: <span id="ap-status-text">-</span></p>
+                    <p>IP地址: <span id="ap-ip">-</span></p>
+                    <p>已连接设备数: <span id="ap-stations">0</span></p>
+                </div>
+
+                <button type="submit" class="btn primary">保存设置</button>
+            </form>
+        </div>
+
+        <!-- 系统控制 -->
+        <div class="system-controls">
+            <button id="reboot-btn" class="btn warning">重启设备</button>
+            <button id="factory-reset-btn" class="btn danger">恢复出厂设置</button>
+        </div>
+    </div>
+
+    <!-- 页面加载时的状态指示器 -->
+    <div id="loading-indicator" class="loading-indicator">
+        <div class="spinner"></div>
+        <span>加载配置中...</span>
+    </div>
+
+    <!-- Toast提示 -->
+    <div id="toast" class="toast"></div>
+
+    <!-- JavaScript -->
+    <script src="script.js"></script>
+</body>
+</html>
